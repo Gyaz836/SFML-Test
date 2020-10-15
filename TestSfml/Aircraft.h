@@ -18,8 +18,13 @@ public:
         Raptor
     };
     Textures::ID typeToTextureType(Type type);
+
+    Category::Type getCategory() const override;
+
 public:
     Aircraft(Type type, const TextureHolder& holder);
+
+    void accelerate(sf::Vector2f velocity);
 private:
     Type mType;
     sf::Sprite mSprite;

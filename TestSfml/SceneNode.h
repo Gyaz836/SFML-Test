@@ -3,10 +3,13 @@
 
 #include <memory>
 #include <vector>
+
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/System/Time.hpp>
+
+#include "Command.h"
 
 class SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {
@@ -19,6 +22,10 @@ public:
 
     sf::Transform getWorldTransform() const;
     sf::Vector2f getWorldPosition() const;
+
+    virtual Category::Type getCategory() const;
+
+    void onCommand(const Command& command, sf::Time dt);
 
     void update(sf::Time dt);
 private:

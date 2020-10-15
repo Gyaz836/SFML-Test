@@ -8,9 +8,18 @@
 #include <cassert>
 
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Font.hpp>
+
+namespace Fonts {
+    enum class ID {
+        Sansation,
+    };
+}
 
 namespace Textures {
     enum class ID {
+        TitleBackground,
+
         Desert,
 
         Missile,
@@ -26,43 +35,44 @@ class ResourceHolder
 public:
     void load(ID id, const std::string& filename)
     {
-        std::unique_ptr<Resource> texture = std::make_unique<Resource>();
-        if (!texture->loadFromFile(filename))
-            throw std::runtime_error("Error in loading texture Id = \"" + std::to_string(static_cast<int>(id)) + "\"");
+        std::unique_ptr<Resource> resource = std::make_unique<Resource>();
+        if (!resource->loadFromFile(filename))
+            throw std::runtime_error("Error in loading resource Id = \"" + std::to_string(static_cast<int>(id)) + "\"");
 
-        auto inserted = mTextureMap.emplace(id, std::move(texture));
+        auto inserted = mResourceMap.emplace(id, std::move(resource));
         assert(inserted.second);
     }
 
     template<typename Parameter>
     void load(ID id, const std::string& filename, const Parameter& secondParam)
     {
-        std::unique_ptr<Resource> texture = std::make_unique<Resource>();
-        if (!texture->loadFromFile(filename, secondParam))
-            throw std::runtime_error("Error in loading texture Id = \"" + std::to_string(static_cast<int>(id)) + "\"");
+        std::unique_ptr<Resource> resource = std::make_unique<Resource>();
+        if (!resource->loadFromFile(filename, secondParam))
+            throw std::runtime_error("Error in loading resource Id = \"" + std::to_string(static_cast<int>(id)) + "\"");
 
-        auto inserted = mTextureMap.emplace(id, std::move(texture));
+        auto inserted = mResourceMap.emplace(id, std::move(resource));
         assert(inserted.second);
     }
 
     Resource& get(ID id)
     {
-        auto textureIt = mTextureMap.find(id);
-        assert(textureIt != mTextureMap.end());
-        return *textureIt->second;
+        auto resourceIt = mResourceMap.find(id);
+        assert(resourceIt != mResourceMap.end());
+        return *resourceIt->second;
     }
 
     const Resource& get(ID id) const
     {
-        auto textureIt = mTextureMap.find(id);
-        assert(textureIt != mTextureMap.end());
-        return *textureIt->second;
+        auto resourceIt = mResourceMap.find(id);
+        assert(resourceIt != mResourceMap.end());
+        return *resourceIt->second;
     }
 
 private:
-    std::map<ID, std::unique_ptr<sf::Texture>> mTextureMap;
+    std::map<ID, std::unique_ptr<Resource>> mResourceMap;
 };
 
 using TextureHolder = ResourceHolder<Textures::ID, sf::Texture>;
+using FontHolder = ResourceHolder<Fonts::ID, sf::Font>;
 
 #endif // ResourceHolder_h__

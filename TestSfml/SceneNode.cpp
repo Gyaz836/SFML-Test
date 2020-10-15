@@ -33,6 +33,21 @@ sf::Vector2f SceneNode::getWorldPosition() const
     return getWorldTransform() * sf::Vector2f();
 }
 
+Category::Type SceneNode::getCategory() const
+{
+    return Category::Type::Scene;
+}
+
+void SceneNode::onCommand(const Command& command, sf::Time dt)
+{
+    if ((command.category & getCategory()) != Category::Type::None)
+        command.action(*this, dt);
+
+    for (auto& child : mChildren) {
+        child->onCommand(command, dt);
+    }
+}
+
 void SceneNode::update(sf::Time dt)
 {
     updateCurrent(dt);

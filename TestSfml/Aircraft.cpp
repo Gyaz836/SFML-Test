@@ -13,12 +13,22 @@ Textures::ID Aircraft::typeToTextureType(Type type)
     throw std::logic_error("Unknown type");
 }
 
+Category::Type Aircraft::getCategory() const
+{
+    return Category::Type::AnyAircraft;
+}
+
 Aircraft::Aircraft(Type type, const TextureHolder& holder)
     : mType(type)
     , mSprite(holder.get(typeToTextureType(type)))
 {
     sf::FloatRect bounds = mSprite.getLocalBounds();
     mSprite.setOrigin(bounds.width / 2, bounds.height / 2);
+}
+
+void Aircraft::accelerate(sf::Vector2f velocity)
+{
+    setVelocity(getVelocity() + velocity);
 }
 
 void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
